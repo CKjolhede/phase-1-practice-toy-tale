@@ -13,3 +13,66 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+fetch("http://localhost:3000/toys")
+	.then((resp) => resp.json())
+	.then((data) => renderToyArr(data))
+
+function renderToyArr(toyArr) {
+
+	const toyCollection = document.querySelector('#toy-collection')
+
+	toyArr.forEach((toyObj) => {
+		const toyCard = document.createElement('div')
+		toyCard.className = 'card'
+	
+		const h2 = document.createElement('h2')
+		h2.textContent = toyObj.name
+		toyCard.appendChild(h2)
+		
+		const img = document.createElement('img')
+		img.src = toyObj.image
+		img.className = 'toy-avatar'
+		toyCard.appendChild(img)
+		
+		const p = document.createElement('p')
+		let currLikes = toyObj.likes
+		p.textContent = `${toyObj.likes} likes`
+		toyCard.appendChild(p)
+		
+		const btn = document.createElement('button')
+		btn.className = 'like-btn'
+		btn.id = toyObj.id
+		btn.textContent = 'Like ❤️'
+		toyCard.appendChild(btn)
+		btn.addEventListener('click', handleIncrementLikes)
+		function handleIncrementLikes() {
+			//console.log(toyObj)	
+			currLikes++
+			p.textContent = `${currLikes} likes`
+		}
+	
+		// console.log(toyCard)
+		
+		toyCollection.appendChild(toyCard)
+	})
+}
+
+const form = document.querySelector('form')
+// console.log(form)
+
+form.addEventListener('submit', (e) => handleAddNewToy(e))
+
+function handleAddNewToy(e) {
+	e.preventDefault()
+	
+	console.log(e)
+	console.log(document.querySelector(`.input-text`).value)
+	const newToyObj = {
+		id : 9,
+		likes : 0,
+		name : e.target.name.value,
+		image : e.target.image.value
+	}
+	renderToyArr([newToyObj])
+}
